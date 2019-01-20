@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class BookCarAdapter implements JavaDelegate {
 
-  @Value("${name}")
-  private String name;
+
 
   @Override
   public void execute(DelegateExecution ctx) throws Exception {

@@ -1,4 +1,4 @@
-package io.flowing.trip.saga.camunda.simple;
+package io.flowing.trip.saga.camunda.flow;
 
 import io.flowing.trip.saga.camunda.adapter.*;
 import org.camunda.bpm.engine.ProcessEngine;
@@ -9,6 +9,8 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.builder.ProcessBuilder;
 
 import io.flowing.trip.saga.camunda.adapter.BookCarAdapter;
+
+import java.io.File;
 
 /**
  * One main class containing everything to run a Saga
@@ -28,17 +30,30 @@ public class TripBookingSaga {
     
     // - flow of activities and compensating actions
     flow.startEvent()
-        .serviceTask("car").name("Reserve car").camundaClass(BookCarAdapter.class)
-          .boundaryEvent().compensateEventDefinition().compensateEventDefinitionDone()
-          .compensationStart().serviceTask("CancelCar").camundaClass(CancelCarAdapter.class).compensationDone()
-        .serviceTask("hotel").name("Book hotel").camundaClass(BookHotelAdapter.class)
-          .boundaryEvent().compensateEventDefinition().compensateEventDefinitionDone()
-          .compensationStart().serviceTask("CancelHotel").camundaClass(CancelHotelAdapter.class).compensationDone()
+        .serviceTask("car")      .name("book car").camundaClass(BookCarAdapter.class)
+                                                      .boundaryEvent().compensateEventDefinition().compensateEventDefinitionDone()
+                                                      .compensationStart().serviceTask("CancelCar")
+                                                      .camundaClass(CancelCarAdapter.class).compensationDone()
+        .serviceTask("hotel")  .name("Book hotel").camundaClass(BookHotelAdapter.class)
+                                                      .boundaryEvent().compensateEventDefinition().compensateEventDefinitionDone()
+                                                      .compensationStart().serviceTask("CancelHotel")
+                                                      .camundaClass(CancelHotelAdapter.class).compensationDone()
         .serviceTask("flight").name("Book flight").camundaClass(BookFlightAdapter.class)
-          .boundaryEvent().compensateEventDefinition().compensateEventDefinitionDone()
-          .compensationStart().serviceTask("CancelFlight").camundaClass(CancelFlightAdapter.class).compensationDone()
+                                                      .boundaryEvent().compensateEventDefinition().compensateEventDefinitionDone()
+                                                      .compensationStart().serviceTask("CancelFlight")
+                                                      .camundaClass(CancelFlightAdapter.class).compensationDone()
         .endEvent();
-    
+//
+//    SagaBuilder saga = SagaBuilder.newSaga("trip") //
+//            .activity            ("Book    car"  , BookCarAdapter.class) //
+//            .compensationActivity("Cancel  car"  , CancelCarAdapter.class) //
+//            .activity            ("Book   hotel" , BookHotelAdapter.class) //
+//            .compensationActivity("Cancel hotel" , CancelHotelAdapter.class) //
+//            .activity            ("Book   flight", BookFlightAdapter.class) //
+//            .compensationActivity("Cancel flight", CancelFlightAdapter.class) //
+//            .end() //
+//            .triggerCompensationOnAnyError();
+
     // - trigger compensation in case of any exception (other triggers are possible)
     flow.eventSubProcess()
         .startEvent().error("java.lang.Throwable")
@@ -48,7 +63,7 @@ public class TripBookingSaga {
     // ready
     BpmnModelInstance saga = flow.done();
     // optional: Write to file to be able to open it in Camunda Modeler
-    //Bpmn.writeModelToFile(new File("trip.bpmn"), saga);
+    Bpmn.writeModelToFile(new File("trip.bpmn"), saga);
 
     // finish Saga and deploy it to Camunda
     camunda.getRepositoryService().createDeployment() //

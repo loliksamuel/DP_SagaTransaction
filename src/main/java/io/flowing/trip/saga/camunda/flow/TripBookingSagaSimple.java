@@ -1,4 +1,4 @@
-package io.flowing.trip.saga.camunda.springboot;
+package io.flowing.trip.saga.camunda.flow;
 
 import javax.annotation.PostConstruct;
 
@@ -12,7 +12,7 @@ import io.flowing.trip.saga.camunda.springboot.builder.SagaBuilder;
 
 @Component
 //@Singleton
-public class TripBookingSaga {
+public class TripBookingSagaSimple {
 
   @Autowired
   private ProcessEngine camunda;
@@ -20,10 +20,10 @@ public class TripBookingSaga {
   @PostConstruct
   public void defineSaga() {
     SagaBuilder saga = SagaBuilder.newSaga("trip") //
-        .activity            ("Book    car", BookCarAdapter.class) //
-        .compensationActivity("Cancel  car", CancelCarAdapter.class) //
-        .activity            ("Book   hotel", BookHotelAdapter.class) //
-        .compensationActivity("Cancel hotel", CancelHotelAdapter.class) //
+        .activity            ("Book    car"  , BookCarAdapter.class) //
+        .compensationActivity("Cancel  car"  , CancelCarAdapter.class) //
+        .activity            ("Book   hotel" , BookHotelAdapter.class) //
+        .compensationActivity("Cancel hotel" , CancelHotelAdapter.class) //
         .activity            ("Book   flight", BookFlightAdapter.class) //
         .compensationActivity("Cancel flight", CancelFlightAdapter.class) //
         .end() //
