@@ -1,4 +1,4 @@
-package io.flowing.trip.saga.camunda.springboot;
+package io.flowing.trip.saga.camunda;
 
 
 import org.camunda.bpm.BpmPlatform;
@@ -9,12 +9,10 @@ import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableProcessApplication
-@ComponentScan
 public class Application {
 
   public static void main(String... args) throws Exception {
