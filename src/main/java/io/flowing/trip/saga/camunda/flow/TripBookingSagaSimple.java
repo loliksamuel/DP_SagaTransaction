@@ -1,14 +1,12 @@
 package io.flowing.trip.saga.camunda.flow;
 
-import javax.annotation.PostConstruct;
-
 import io.flowing.trip.saga.camunda.adapter.*;
+import io.flowing.trip.saga.camunda.springboot.builder.SagaBuilder;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.flowing.trip.saga.camunda.adapter.BookCarAdapter;
-import io.flowing.trip.saga.camunda.springboot.builder.SagaBuilder;
+import javax.annotation.PostConstruct;
 
 @Component
 //@Singleton
@@ -29,12 +27,20 @@ public class TripBookingSagaSimple {
         .end() //
         .triggerCompensationOnAnyError();
 
+    // optional: Write to file to be able to open it in Camunda Modeler
+    //Bpmn.writeModelToFile(new File("result.bpmn"), saga.getModel());
+
     camunda.getRepositoryService().createDeployment() //
         .addModelInstance("trip.bpmn", saga.getModel()) //
         .deploy();
 
-//    File file = new File("result.bpmn");
-//    Bpmn.writeModelToFile(file, saga.getModel());
+
+
+
+
+
+
+
   }
 
 }
