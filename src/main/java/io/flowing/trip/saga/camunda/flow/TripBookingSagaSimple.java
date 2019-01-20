@@ -4,6 +4,7 @@ import io.flowing.trip.saga.camunda.adapter.*;
 import io.flowing.trip.saga.camunda.springboot.builder.SagaBuilder;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -13,10 +14,19 @@ import javax.annotation.PostConstruct;
 public class TripBookingSagaSimple {
 
   @Autowired
-  private ProcessEngine camunda;
+  private ProcessEngine   camunda;
+
+
+  @Value("${succeed.flight:true}")
+  boolean shouldSucceed;
+
+  @Value("${succeed.car:true}")
+  String shouldSucceedCar;
 
   @PostConstruct
   public void defineSaga() {
+
+    System.out.println("shouldSucceedCar="+shouldSucceedCar+" shouldSucceed="+shouldSucceed);
     SagaBuilder saga = SagaBuilder.newSaga("trip") //
         .activity            ("Book    car"  , BookCarAdapter.class) //
         .compensationActivity("Cancel  car"  , CancelCarAdapter.class) //
