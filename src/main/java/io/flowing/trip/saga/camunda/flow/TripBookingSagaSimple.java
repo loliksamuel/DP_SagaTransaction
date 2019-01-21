@@ -2,19 +2,24 @@ package io.flowing.trip.saga.camunda.flow;
 
 import io.flowing.trip.saga.camunda.adapter.*;
 import io.flowing.trip.saga.camunda.springboot.builder.SagaBuilder;
+import org.camunda.bpm.BpmPlatform;
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
+import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
+import org.camunda.bpm.model.bpmn.Bpmn;
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 @Component
 //@Singleton
 public class TripBookingSagaSimple {
 
-  @Autowired
-  private ProcessEngine   camunda;
+//  @Autowired
+//  private ProcessEngine   camunda;
 
 
   @Value("${succeed.flight:true}")
@@ -26,6 +31,9 @@ public class TripBookingSagaSimple {
   @PostConstruct
   public void defineSaga() {
 
+    // Configure and startup (in memory) engine
+    ProcessEngine camunda = new StandaloneInMemProcessEngineConfiguration().buildProcessEngine();
+
     System.out.println("shouldSucceedCar="+shouldSucceedCar+" shouldSucceed="+shouldSucceed);
     SagaBuilder saga = SagaBuilder.newSaga("trip") //
         .activity            ("Book    car"  , BookCarAdapter.class) //
@@ -35,15 +43,24 @@ public class TripBookingSagaSimple {
         .activity            ("Book   flight", BookFlightAdapter.class) //
         .compensationActivity("Cancel flight", CancelFlightAdapter.class) //
         .end() //
-        .triggerCompensationOnAnyError();
+        .triggerCompensationOnAnyError();//flow.eventSubProcess()...
 
-    // optional: Write to file to be able to open it in Camunda Modeler
-    //Bpmn.writeModelToFile(new File("result.bpmn"), saga.getModel());
+    // get model instance
+    BpmnModelInstance modelInstance = saga.getModel();
 
+    // write to file to be able to open it in Camunda Modeler
+    Bpmn.writeModelToFile(new File("result.bpmn"), modelInstance);
+
+    //deploy
     camunda.getRepositoryService().createDeployment() //
-        .addModelInstance("trip.bpmn", saga.getModel()) //
+        .addModelInstance("trip.bpmn", modelInstance) //
         .deploy();
 
+    // run instances of our saga - its state will be persisted
+    camunda.getRuntimeService().startProcessInstanceByKey(
+            "trip",
+            Variables.putValue("someVariableToPass", "someValue")
+                     .putValue("name", "mazda"));
 
 
 

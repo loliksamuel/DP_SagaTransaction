@@ -5,13 +5,12 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 public class BookHotelAdapter implements JavaDelegate {
 
-  private boolean shouldSucceed = false;
+  private boolean shouldSucceed = true;
 
   @Override
   public void execute(DelegateExecution execution) throws Exception {
 
-
-
+    //execution.getVariable("shouldsucceed");
     if (shouldSucceed) {
       System.out.println("book hotel succeeded");
 

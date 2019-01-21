@@ -8,12 +8,12 @@ public class BookCarAdapter implements JavaDelegate {
   private boolean shouldSucceed = true;
 
   @Override
-  public void execute(DelegateExecution ctx) throws Exception {
+  public void execute(DelegateExecution execution) throws Exception {
 
 
 
     if (shouldSucceed) {
-      System.out.println("book car for '" + ctx.getVariable("name") +  "' succeeded");
+      System.out.println("book car for '" + execution.getVariable("name") +  "' succeeded");
 
     }
     else{
