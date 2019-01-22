@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Use {@link StrongUuidGenerator} to avoid potential problems in cluster environments with {@link DbIdGenerator}
  */
-@Configuration
+//@Configuration
 public class CamundaEngineIdGeneratorConfiguration extends AbstractCamundaConfiguration implements CamundaHistoryLevelAutoHandlingConfiguration {
 
   @Override

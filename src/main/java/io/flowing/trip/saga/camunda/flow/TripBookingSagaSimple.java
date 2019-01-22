@@ -2,15 +2,16 @@ package io.flowing.trip.saga.camunda.flow;
 
 import io.flowing.trip.saga.camunda.adapter.*;
 import io.flowing.trip.saga.camunda.springboot.builder.SagaBuilder;
-import org.camunda.bpm.BpmPlatform;
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.camunda.bpm.model.bpmn.Bpmn;
+
 import javax.annotation.PostConstruct;
 import java.io.File;
 
@@ -18,9 +19,11 @@ import java.io.File;
 //@Singleton
 public class TripBookingSagaSimple {
 
-//  @Autowired
-//  private ProcessEngine   camunda;
+  @Autowired
+  private ProcessEngine   camunda;
 
+//  @Autowired
+//  private RuntimeService runtimeService;
 
   @Value("${succeed.flight:true}")
   boolean shouldSucceed;
@@ -32,7 +35,7 @@ public class TripBookingSagaSimple {
   public void defineSaga() {
 
     // Configure and startup (in memory) engine
-    ProcessEngine camunda = new StandaloneInMemProcessEngineConfiguration().buildProcessEngine();
+   // ProcessEngine camunda = new StandaloneInMemProcessEngineConfiguration().buildProcessEngine();
 
     System.out.println("shouldSucceedCar="+shouldSucceedCar+" shouldSucceed="+shouldSucceed);
     SagaBuilder saga = SagaBuilder.newSaga("trip") //
@@ -55,12 +58,14 @@ public class TripBookingSagaSimple {
     camunda.getRepositoryService().createDeployment() //
         .addModelInstance("trip.bpmn", modelInstance) //
         .deploy();
+/*
 
     // run instances of our saga - its state will be persisted
     camunda.getRuntimeService().startProcessInstanceByKey(
             "trip",
             Variables.putValue("someVariableToPass", "someValue")
                      .putValue("name", "mazda"));
+*/
 
 
 

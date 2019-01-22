@@ -8,7 +8,7 @@ import org.camunda.bpm.spring.boot.starter.configuration.CamundaHistoryLevelAuto
 import org.camunda.bpm.spring.boot.starter.configuration.impl.AbstractCamundaConfiguration;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class CamundaEngineHistoryConfiguration extends AbstractCamundaConfiguration implements CamundaHistoryLevelAutoHandlingConfiguration {
 
   @Override

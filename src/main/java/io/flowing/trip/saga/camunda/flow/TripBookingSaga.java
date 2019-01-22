@@ -14,7 +14,8 @@ import java.io.File;
 
 /**
  * One main class containing everything to run a Saga
- * using Camunda and BPMN. The class runs an in memory engine,
+ * using Camunda and BPMN.
+ * The class runs an in memory engine,
  * defines the Saga and run a couple of instances.
  */
 public class TripBookingSaga {
